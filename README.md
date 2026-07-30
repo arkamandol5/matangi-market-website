@@ -1,98 +1,101 @@
-# vinext-starter
+# Matangi Market Pvt Limited
 
-A clean full-stack starter running on
-[vinext](https://github.com/cloudflare/vinext), with optional Cloudflare D1 and
-Drizzle support.
+Official company website for **Matangi Market Pvt Limited**, a newly established
+UK business sourcing branded consumer goods from recognised wholesale channels
+for responsible resale through Amazon FBA.
 
-## Prerequisites
+**Production site:** [matangi-market-uk.arkamandol.chatgpt.site](https://matangi-market-uk.arkamandol.chatgpt.site)
 
-- Node.js `>=22.13.0`
+## Purpose
 
-## Quick Start
+The website gives prospective wholesalers, distributors and brands a clear view
+of:
+
+- the company’s wholesale-to-market operating model;
+- its approach to traceable sourcing and organised commercial documentation;
+- its commitment to brand standards and marketplace compliance;
+- its supplier onboarding and measured-growth process; and
+- its legal name, business stage and registered address.
+
+The copy deliberately avoids unverified certifications, partnerships and contact
+details.
+
+## Company information
+
+| Field | Details |
+| --- | --- |
+| Legal name | Matangi Market Pvt Limited |
+| Company stage | Recently registered |
+| Business model | Wholesale procurement and Amazon FBA resale |
+| Registered address | 46 Edison Gardens, Gateshead, NE8 4SE, United Kingdom |
+
+## Technology
+
+- React 19 and Next.js-compatible routing through vinext
+- TypeScript
+- Tailwind CSS build tooling with a custom responsive design system
+- Vite and Cloudflare Workers-compatible deployment output
+- OpenAI Sites deployment configuration
+
+The production page is server-rendered and uses no advertising scripts,
+analytics trackers, cookies, contact forms or third-party client-side
+integrations.
+
+## Local development
+
+### Requirements
+
+- Node.js 22.13 or newer
+- npm
+
+### Setup
 
 ```bash
 npm install
 npm run dev
-npm run build
 ```
 
-This starter does not use `wrangler.jsonc`.
+Open [http://localhost:3000](http://localhost:3000).
 
-## Included Shape
+### Quality checks
 
-- edit site code under `app/`
-- `.openai/hosting.json` declares optional Sites D1 and R2 bindings
-- `vite.config.ts` simulates declared bindings for local development
-- `db/schema.ts` starts intentionally empty
-- `examples/d1/` contains an optional D1 example surface
-- `drizzle.config.ts` supports local migration generation when needed
-
-## Workspace Auth Headers
-
-OpenAI workspace sites can read the current user's email from
-`oai-authenticated-user-email`.
-
-SIWC-authenticated workspace sites may also receive
-`oai-authenticated-user-full-name` when the user's SIWC profile has a non-empty
-`name` claim. The full-name value is percent-encoded UTF-8 and is accompanied by
-`oai-authenticated-user-full-name-encoding: percent-encoded-utf-8`.
-
-Treat the full name as optional and fall back to email when it is absent:
-
-```tsx
-import { headers } from "next/headers";
-
-export default async function Home() {
-  const requestHeaders = await headers();
-  const email = requestHeaders.get("oai-authenticated-user-email");
-  const encodedFullName = requestHeaders.get("oai-authenticated-user-full-name");
-  const fullName =
-    encodedFullName &&
-    requestHeaders.get("oai-authenticated-user-full-name-encoding") ===
-      "percent-encoded-utf-8"
-      ? decodeURIComponent(encodedFullName)
-      : null;
-
-  const displayName = fullName ?? email;
-  // ...
-}
+```bash
+npm run lint
+npm test
 ```
 
-## Optional Dispatch-Owned ChatGPT Sign-In
+`npm test` creates a production build and verifies the rendered company content,
+metadata and security headers.
 
-Import the ready-to-use helpers from `app/chatgpt-auth.ts` when the site needs
-optional or required ChatGPT sign-in:
+## Project structure
 
-- Use `getChatGPTUser()` for optional signed-in UI.
-- Use `requireChatGPTUser(returnTo)` for server-rendered pages that should send
-  anonymous visitors through Sign in with ChatGPT.
-- Use `chatGPTSignInPath(returnTo)` and `chatGPTSignOutPath(returnTo)` for
-  browser links or actions.
-- Pass a same-origin relative `returnTo` path for the destination after sign-in
-  or sign-out. The helper validates and safely encodes it.
-- Mark protected pages with `export const dynamic = "force-dynamic"` because
-  they depend on per-request identity headers.
+```text
+app/
+  globals.css       Responsive visual system
+  layout.tsx        Metadata and document shell
+  page.tsx          Company website content
+build/
+  sites-vite-plugin.ts
+tests/
+  rendered-html.test.mjs
+worker/
+  index.ts          Worker entry point and security headers
+.openai/
+  hosting.json      Sites project configuration
+```
 
-Dispatch owns `/signin-with-chatgpt`, `/signout-with-chatgpt`, `/callback`, the
-OAuth cookies, and identity header injection. Do not implement app routes for
-those reserved paths. Routes that do not import and call the helper remain
-anonymous-compatible.
+## Security
 
-SIWC establishes identity only; it does not prove workspace membership. Use the
-Sites hosting platform's access policy controls for workspace-wide restrictions,
-or enforce explicit server-side membership or allowlist checks.
+The Worker applies a restrictive Content Security Policy, clickjacking
+protection, MIME-sniffing protection, HTTPS enforcement, a limited browser
+permissions policy and privacy-preserving referrer handling. Secrets and local
+environment files are excluded from version control.
 
-Use SIWC for account pages, user-specific dashboards, saved records, and write
-actions tied to the current ChatGPT user. Leave public content anonymous.
+See [SECURITY.md](SECURITY.md) for responsible vulnerability reporting.
 
-## Useful Commands
+## Ownership
 
-- `npm run dev`: start local development
-- `npm run build`: verify the vinext build output
-- `npm test`: build the starter and verify its rendered loading skeleton
-- `npm run db:generate`: generate Drizzle migrations after schema changes
+Copyright © 2026 Matangi Market Pvt Limited. All rights reserved.
 
-## Learn More
-
-- [vinext Documentation](https://github.com/cloudflare/vinext)
-- [Drizzle D1 Guide](https://orm.drizzle.team/docs/get-started/d1-new)
+The repository is public for transparency. It is not released under an
+open-source licence; see [LICENSE](LICENSE).
